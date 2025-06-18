@@ -15,6 +15,10 @@ public interface BlameTextCommentRepository extends JpaRepository<BlameTextComme
 //    @Query("SELECT b FROM BlameTextComment b WHERE b.comment.commentSeq = :commentSeq AND b.deleteFlag = :deleteFlag")
 //    Optional<BlameTextComment> findByCommentSeqAndDeleteFlag(@Param("commentSeq") Integer commentSeq, @Param("deleteFlag") Integer deleteFlag);
 
-    Page<BlameTextComment> findBlameTextCommentsByLabel(int label, Pageable pageable);
+    Optional<Page<BlameTextComment>> findBlameTextCommentsByLabel(int label, Pageable pageable);
     Optional<List<BlameTextComment>> findBlameTextCommentsByBoardTypeAndStorySeqAndOriginSeqAndDeleteFlag(String boardType, Integer storySeq, Integer commentSeq, int i);
+
+    Optional<Page<BlameTextComment>> findBlameTextCommentsByDeleteFlag(Integer isNotDelete, Pageable pageable);
+
+    Optional<Page<BlameTextComment>> findBlameTextCommentsByLabelOrderByUpdateTimeDesc(Integer isBlameLabel, Pageable pageable);
 }

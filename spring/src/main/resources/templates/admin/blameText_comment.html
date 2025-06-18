@@ -74,6 +74,13 @@ BlameText - Comment
                 console.error(error);
             })
     }
+
+    function filteringByOptionOrderByOption() {
+        let filter = document.getElementById('filter-option').value;
+        let orderBy = document.getElementById("order-by").value;
+
+        window.location.href = "/admin/blameText/comment?filter="+filter+"&orderBy="+orderBy;
+    }
 </script>
 </body>
 </html>

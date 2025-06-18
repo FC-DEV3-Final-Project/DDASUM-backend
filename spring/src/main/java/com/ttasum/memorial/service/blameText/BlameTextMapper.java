@@ -8,11 +8,10 @@ import com.ttasum.memorial.dto.blameText.BlameTextCommentDto;
 import com.ttasum.memorial.dto.blameText.BlameTextCommentSentenceDto;
 import com.ttasum.memorial.dto.blameText.BlameTextLetterDto;
 import com.ttasum.memorial.dto.blameText.BlameTextLetterSentenceDto;
-import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-public class BlameTextLetterMapper {
+public class BlameTextMapper {
 
 
     public static BlameTextLetterDto toBlameTextLetterDto(BlameTextLetter entity) {
@@ -30,7 +29,7 @@ public class BlameTextLetterMapper {
                 .sentences(
                         entity.getSentences() != null ?
                                 entity.getSentences().stream()
-                                        .map(BlameTextLetterMapper::toBlameTextLetterSentenceDto)
+                                        .map(BlameTextMapper::toBlameTextLetterSentenceDto)
                                         .collect(Collectors.toList())
                                 : null
                 )
@@ -62,7 +61,7 @@ public class BlameTextLetterMapper {
                 .comments(
                         entity.getComments() != null ?
                                 entity.getComments().stream()
-                                        .map(BlameTextLetterMapper::toBlameTextCommentSentenceDto)
+                                        .map(BlameTextMapper::toBlameTextCommentSentenceDto)
                                         .collect(Collectors.toList())
                                 : null
                 )

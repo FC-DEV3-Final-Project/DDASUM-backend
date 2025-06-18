@@ -38,7 +38,7 @@ import com.ttasum.memorial.exception.blameText.BlametextNotDefinitionFiltering;
 import com.ttasum.memorial.exception.heavenLetter.HeavenLetterCommentNotFoundException;
 import com.ttasum.memorial.exception.heavenLetter.HeavenLetterNotFoundException;
 import com.ttasum.memorial.exception.memorial.MemorialNotFoundException;
-import com.ttasum.memorial.service.blameText.BlameTextLetterMapper;
+import com.ttasum.memorial.service.blameText.BlameTextMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -183,7 +183,7 @@ public class AdminServiceImpl implements AdminService
         }
 
         return new PageResponse<>(
-                Objects.requireNonNull(page).getContent().stream().map(BlameTextLetterMapper::toBlameTextLetterDto).collect(Collectors.toList()),
+                Objects.requireNonNull(page).getContent().stream().map(BlameTextMapper::toBlameTextLetterDto).collect(Collectors.toList()),
                 page.getNumber(),
                 page.getSize(),
                 page.getTotalElements(),
@@ -195,7 +195,7 @@ public class AdminServiceImpl implements AdminService
     @Override
     public ArrayList<BlameTextLetterSentenceDto> getBlameTextLettersSentences(int seq) {
         return blameTextLetterSentenceRepository.getBlameTextLetterSentencesByIdLetterSeqOrderByIdSeq(seq)
-                .stream().map(BlameTextLetterMapper::toBlameTextLetterSentenceDto)
+                .stream().map(BlameTextMapper::toBlameTextLetterSentenceDto)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -276,12 +276,32 @@ public class AdminServiceImpl implements AdminService
         return PageRequest.of(page, size, sort);
     }
 
+    @Transactional
     @Override
-    public PageResponse<BlameTextCommentDto> getBlameTextComment(String filter, String orderBy, Pageable pageable) {
-        Page<BlameTextComment> page = blameTextCommentRepository.findBlameTextCommentsByLabel(IS_BLAME_LABEL, pageable);
+    public PageResponse<BlameTextCommentDto> getBlameTextComment(String option, String orderBy, Pageable pageable) {
+        Page<BlameTextComment> page = null;
+
+        if(option == null || option.equals("Default")){
+            page = blameTextCommentRepository.findBlameTextCommentsByLabelOrderByUpdateTimeDesc(IS_BLAME_LABEL, pageable)
+                    .orElseThrow();
+        } else if (option.equals("isDelete")) {
+            page = blameTextCommentRepository.findBlameTextCommentsByDeleteFlag(IS_DELETE, pageable)
+                    .orElseThrow();
+        } else if (option.equals("isNotDelete")) {
+            page = blameTextCommentRepository.findBlameTextCommentsByDeleteFlag(IS_NOT_DELETE, pageable)
+                    .orElseThrow();
+        } else if (option.equals("isBlameLabelTrue")) {
+            page = blameTextCommentRepository.findBlameTextCommentsByLabel(IS_BLAME_LABEL, pageable)
+                    .orElseThrow();
+        } else if (option.equals("isBlameLabelFalse")) {
+            page = blameTextCommentRepository.findBlameTextCommentsByLabel(IS_NOT_BLAME_LABEL, pageable)
+                    .orElseThrow();
+        } else {
+            throw new BlametextNotDefinitionFiltering("등록되어 있는 Option이 아님");
+        }
 
         return new PageResponse<>(
-                page.getContent().stream().map(BlameTextLetterMapper::toBlameTextCommentDto).collect(Collectors.toList()),
+                page.getContent().stream().map(BlameTextMapper::toBlameTextCommentDto).collect(Collectors.toList()),
                 page.getNumber(),
                 page.getSize(),
                 page.getTotalElements(),
