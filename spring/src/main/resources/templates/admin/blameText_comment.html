@@ -41,7 +41,8 @@ BlameText - Comment
     </p>
     <p><strong>공개 여부:</strong> <span th:text="${comment.deleteFlag == 1 ? '비공개 처리' : '공개 처리'}"></span></p>
     <button type="button" th:onclick="|goBlameCommentDetail(${comment.seq})|">상세 문장 분석 결과</button>
-    <button type="button" th:onclick="|deleteBlametextComment(${comment.originSeq})|">글 비공개 처리</button>
+    <button type="button" th:onclick="|deleteBlametextComment(${comment.originSeq})|"
+            th:hidden="${comment.deleteFlag == 1}">글 비공개 처리</button>
     <hr/>
 </div>
 
